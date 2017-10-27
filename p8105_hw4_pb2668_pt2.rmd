@@ -15,7 +15,7 @@ library(readr)
 library(ggplot2)
 
 #enter pols data, create presidential party variable
-pols_data <- read_csv("../data/fivethirtyeight_datasets/pols-month.csv") %>%
+pols_data <- read_csv("./pols-month.csv") %>%
   janitor::clean_names() %>%
   rename("date" = "mon") %>%
   mutate("pres_party" = prez_dem) %>%
@@ -25,7 +25,7 @@ pols_data$pres_party[pols_data$pres_party == "0"] <- "GOP"
 pols_data$date <- lubridate::floor_date(pols_data$date, unit = "month")
 
 #enter gdp data
-gdp_data <- read_csv("../data/fivethirtyeight_datasets/GDP.csv") %>%
+gdp_data <- read_csv("./GDP.csv") %>%
   janitor::clean_names()
 gdp_data$date <- lubridate::floor_date(gdp_data$date, unit = "month")
 
@@ -34,4 +34,16 @@ full_data <-full_join(pols_data, gdp_data, by = "date") %>%
   na.omit()
 full_data <- full_data[-c(1,2,3,4),] %>%
   rename("GDP" = "value")
+
+#The collaborator will create a plot showing the GDP value over time, including the party of the president in an informative aesthetic.
+
+ggplot(full_data, aes(x = date, y = as.numeric(GDP), color = pres_party)) +
+  geom_point() + 
+  labs(x = "Date", y = "GDP", 
+       title = "GDP from 1948 to 2015 with Current President's Political Party",
+       colour = "President's Political Party") + 
+  scale_x_date(breaks = scales::pretty_breaks(15))
+
 ```
+
+From this plot, we can see that GDP was highest between 1950 and 1953, and that there was a sharp decline in GDP from 1980 to 1995. GDP was lowest right before 1950 and right before 2010. Both the highest and lowest GDP values were recorded when the president was a Democrat. Between 1948 and 1953 we see the most radical shifts in GDP, occuring during the time of a Democratic president. We see the most stabilized GDP between about 1986 and 2007, during which there were both Democratic and GOP presidents. 
