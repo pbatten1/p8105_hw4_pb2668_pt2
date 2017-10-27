@@ -9,3 +9,29 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+``` {r}
+library(dplyr)
+library(readr)
+library(ggplot2)
+
+#enter pols data, create presidential party variable
+pols_data <- read_csv("../data/fivethirtyeight_datasets/pols-month.csv") %>%
+  janitor::clean_names() %>%
+  rename("date" = "mon") %>%
+  mutate("pres_party" = prez_dem) %>%
+  select(-c(prez_dem, prez_gop))
+pols_data$pres_party[pols_data$pres_party == "1"] <- "Democrat"
+pols_data$pres_party[pols_data$pres_party == "0"] <- "GOP"
+pols_data$date <- lubridate::floor_date(pols_data$date, unit = "month")
+
+#enter gdp data
+gdp_data <- read_csv("../data/fivethirtyeight_datasets/GDP.csv") %>%
+  janitor::clean_names()
+gdp_data$date <- lubridate::floor_date(gdp_data$date, unit = "month")
+
+#join data, eliminate entries for GDP that have no value (unplottable points)
+full_data <-full_join(pols_data, gdp_data, by = "date") %>%
+  na.omit()
+full_data <- full_data[-c(1,2,3,4),] %>%
+  rename("GDP" = "value")
+```
