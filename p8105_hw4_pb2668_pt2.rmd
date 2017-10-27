@@ -1,0 +1,11 @@
+---
+title: "Data Science HW4 M. de Ferrante & P. Batten"
+author: "M. de Ferrante, P. Batten"
+date: "October 27, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
